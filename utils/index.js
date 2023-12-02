@@ -23,3 +23,5 @@ export const fetchInput = async ({ day, year }) => {
         return result
     }
 }
+
+export const splitByLines = ({ input }) => input.split(/\r?\n/).filter(Boolean)
