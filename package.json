@@ -1,0 +1,43 @@
+{
+    "name": "advent-of-code-2023",
+    "type": "module",
+    "version": "0.1.0",
+    "description": "My Advent of Code 2023 solutions",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "puzzle": "node --env-file=.env $1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/capJavert/advent-of-code-2023.git"
+    },
+    "keywords": [
+        "advent-of-code",
+        "aoc",
+        "javascript",
+        "node",
+        "xmas",
+        "rust",
+        "wasm"
+    ],
+    "author": "capJavert",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/capJavert/advent-of-code-2023/issues"
+    },
+    "homepage": "https://github.com/capJavert/advent-of-code-2023#readme",
+    "devDependencies": {
+        "eslint": "8.55.0",
+        "eslint-config-next": "14.0.3",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.0.1",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
+        "eslint-plugin-prefer-arrow-functions": "^3.2.4"
+    },
+    "dependencies": {
+        "next": "^14.0.3"
+    },
+    "volta": {
+        "node": "20.10.0"
+    }
+}

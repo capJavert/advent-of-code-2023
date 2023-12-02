@@ -1,0 +1,25 @@
+{
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": [
+        "prettier",
+        "simple-import-sort",
+        "prefer-arrow-functions"
+    ],
+    "rules": {
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
+        "no-unused-vars": ["error", { "args": "none" }],
+        "prefer-arrow-functions/prefer-arrow-functions": [
+            "error",
+            {
+              "classPropertiesAllowed": false,
+              "disallowPrototype": false,
+              "returnStyle": "unchanged",
+              "singleReturnOnly": false
+            }
+          ]
+    }
+}
