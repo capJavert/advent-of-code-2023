@@ -33,15 +33,26 @@ const main = async () => {
         }
     })
 
-    const validGames = games.filter(({ rounds }) => {
-        return rounds.every(item => {
-            const { red, blue, green } = item
+    const validGames = games.map(({ rounds }) => {
+        const maxColors = rounds.reduce(
+            (acc, round) => {
+                Object.entries(round).forEach(([key, value]) => {
+                    acc[key] = Math.max(acc[key], value)
+                })
 
-            return red <= 12 && green <= 13 && blue <= 14
-        })
+                return acc
+            },
+            {
+                red: 0,
+                blue: 0,
+                green: 0
+            }
+        )
+
+        return maxColors.red * maxColors.blue * maxColors.green
     })
 
-    console.log(validGames.reduce((acc, curr) => acc + curr.id, 0))
+    console.log(validGames.reduce((acc, curr) => acc + curr, 0))
 }
 
 main()
