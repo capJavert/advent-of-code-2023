@@ -46,4 +46,4 @@ web-ext-artifacts
 /pkg
 
 output
-inputs
+inputs/input-*.txt
