@@ -85,7 +85,7 @@ const main = async () => {
         for (let j = 0; j < grid[i].length; j++) {
             const item = grid[i][j]
 
-            if (item === '.' || typeof item === 'number') {
+            if (item !== '*') {
                 continue
             }
 
@@ -99,9 +99,9 @@ const main = async () => {
                 }
             }
 
-            partNumbers.forEach(partNumber => {
-                partNumberSum += partNumber
-            })
+            if (partNumbers.size === 2) {
+                partNumberSum += [...partNumbers].reduce((acc, curr) => acc * curr, 1)
+            }
         }
     }
 
