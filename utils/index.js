@@ -11,6 +11,7 @@ export const fetchInput = async ({ day, year }) => {
 
         const headers = new Headers()
         headers.append('cookie', `session=${process.env.AOC_SESSION}`)
+        headers.append('user-agent', `github.com/capjavert/advent-of-code-${year}`)
 
         const response = await fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
             method: 'GET',
