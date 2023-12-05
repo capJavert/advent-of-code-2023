@@ -33,21 +33,40 @@ const main = async () => {
         return ranges
     })
 
-    let transformedSeeds = [...seeds]
-
-    for (let rangeMap of rangeMaps) {
-        transformedSeeds = transformedSeeds.map(seed => {
-            const range = rangeMap.find(range => range.sourceStart <= seed && range.sourceStart + range.range >= seed)
-
-            if (range) {
-                return range.destinationStart + (seed - range.sourceStart)
-            }
-
-            return seed
-        })
+    const chunkSize = 2
+    const seedRanges = []
+    for (let i = 0; i < seeds.length; i += chunkSize) {
+        const chunk = seeds.slice(i, i + chunkSize)
+        seedRanges.push(chunk)
     }
 
-    console.log(Math.min(...transformedSeeds))
+    const rangesCounts = rangeMaps.length
+
+    let minLocation = Infinity
+
+    for (let seedRange of seedRanges) {
+        const [a, b] = seedRange
+
+        for (let i = a; i < a + b; i += 1) {
+            let transformedSeed = i
+
+            for (let j = 0; j < rangesCounts; j += 1) {
+                const rangeMap = rangeMaps[j]
+
+                for (let k = 0; k < rangeMap.length; k += 1) {
+                    const range = rangeMap[k]
+
+                    if (range.sourceStart <= transformedSeed && range.sourceStart + range.range > transformedSeed) {
+                        transformedSeed = range.destinationStart + (transformedSeed - range.sourceStart)
+                        break
+                    }
+                }
+            }
+            minLocation = Math.min(minLocation, transformedSeed)
+        }
+    }
+
+    console.log(minLocation)
 }
 
 main()
