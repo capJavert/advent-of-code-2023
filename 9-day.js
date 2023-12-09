@@ -39,7 +39,7 @@ const main = async () => {
 
         for (let i = timelines.length - 2; i >= 0; i -= 1) {
             const current = timelines[i]
-            const value = current[current.length - 1] + next
+            const value = current[0] - next
             next = value
         }
 
