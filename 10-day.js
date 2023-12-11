@@ -29,6 +29,8 @@ const main = async () => {
     }
 
     let start = undefined
+    // by looking at input figure out what S should be
+    let startPipe = 'L'
 
     let matrixMap = {}
 
@@ -38,21 +40,20 @@ const main = async () => {
         for (let x = 0; x < row.length; x += 1) {
             if (row[x] === 'S') {
                 start = { x, y }
+                matrixMap[`${x},${y}`] = row[x] = startPipe
+            } else {
+                matrixMap[`${x},${y}`] = row[x]
             }
-
-            matrixMap[`${x},${y}`] = row[x]
         }
     }
 
-    // by looking at input figure out what S should be
-    let startPipe = 'L'
     let directions = directionMap[startPipe]
     let position = { ...start }
-    let stepsDistanceMap = {}
 
-    for (let direction of directions) {
-        let steps = 0
+    const loop = new Map()
+    loop.set(`${position.x},${position.y}`, position)
 
+    for (let direction of directions.slice(0, 1)) {
         while (true) {
             const move = directionToCoordMap[direction]
             position = {
@@ -64,20 +65,40 @@ const main = async () => {
                 break
             }
 
-            steps += 1
-
-            stepsDistanceMap[`${position.x},${position.y}`] = Math.min(
-                stepsDistanceMap[`${position.x},${position.y}`] || Infinity,
-                steps
-            )
+            loop.set(`${position.x},${position.y}`, position)
 
             direction = directionMap[matrixMap[`${position.x},${position.y}`]].filter(
                 item => item !== oppositeDirectionMap[direction]
             )[0]
         }
     }
+    let space = 0
 
-    console.log(Math.max(...Object.values(stepsDistanceMap)))
+    for (let y = 0; y < matrix.length; y += 1) {
+        const row = matrix[y]
+
+        for (let x = 0; x < row.length; x += 1) {
+            if (loop.has(`${x},${y}`)) {
+                continue
+            }
+            let intersections = 0
+
+            for (let k = 0; k < x; k += 1) {
+                if (loop.has(`${k},${y}`) && ['|', 'F', '7', 'S'].includes(matrixMap[`${k},${y}`])) {
+                    intersections += 1
+                }
+            }
+
+            // https://en.wikipedia.org/wiki/Jordan_curve_theorem
+            // odd number of intersections means point is inside
+            // the loop (geometry figure)
+            if (intersections % 2 !== 0) {
+                space += 1
+            }
+        }
+    }
+
+    console.log(space)
 }
 
 main()
