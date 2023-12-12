@@ -11,7 +11,7 @@ const main = async () => {
         console.log(items.map(row => row.join('')).join('\n'))
     }
 
-    let addedRows = 0
+    let addedRows = []
 
     for (let y = 0; y < recordedUniverse.length; y += 1) {
         const row = recordedUniverse[y]
@@ -20,12 +20,11 @@ const main = async () => {
             continue
         }
 
-        universe.splice(y + addedRows, 0, [...row])
-        addedRows += 1
+        addedRows.push(y)
     }
 
     recordedUniverse = JSON.parse(JSON.stringify(universe))
-    let addedColumns = 0
+    let addedColumns = []
 
     for (let x = 0; x < recordedUniverse[0].length; x += 1) {
         const column = recordedUniverse.map(row => row[x])
@@ -34,10 +33,7 @@ const main = async () => {
             continue
         }
 
-        universe.forEach((row, index) => {
-            row.splice(x + addedColumns, 0, recordedUniverse[index][x])
-        })
-        addedColumns += 1
+        addedColumns.push(x)
     }
 
     const manhattanDistance = (point1, point2) => Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y)
@@ -60,6 +56,7 @@ const main = async () => {
     }
 
     let distancesMap = {}
+    const universeAge = 1000000 - 1
 
     for (let galaxyA of galaxies) {
         for (let galaxyB of galaxies) {
@@ -67,7 +64,15 @@ const main = async () => {
                 continue
             }
 
-            const distance = manhattanDistance(galaxyA, galaxyB)
+            const translatedGalaxyA = {
+                x: galaxyA.x + addedColumns.filter(column => column < galaxyA.x).length * universeAge,
+                y: galaxyA.y + addedRows.filter(row => row < galaxyA.y).length * universeAge
+            }
+            const translatedGalaxyB = {
+                x: galaxyB.x + addedColumns.filter(column => column < galaxyB.x).length * universeAge,
+                y: galaxyB.y + addedRows.filter(row => row < galaxyB.y).length * universeAge
+            }
+            const distance = manhattanDistance(translatedGalaxyA, translatedGalaxyB)
 
             distancesMap[
                 [universe[galaxyA.y][galaxyA.x], universe[galaxyB.y][galaxyB.x]].sort((a, b) => b - a).toString()
