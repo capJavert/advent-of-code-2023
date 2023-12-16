@@ -11,8 +11,8 @@ const main = async () => {
         left: [-1, 0]
     }
 
-    const beamSplits = {}
-    const energyGrid = JSON.parse(JSON.stringify(grid))
+    let beamSplits = {}
+    let energyGrid = new Set()
 
     const beam = (x, y, direction) => {
         const [dx, dy] = directionToCoord[direction]
@@ -24,7 +24,7 @@ const main = async () => {
             return
         }
 
-        energyGrid[nextY][nextX] = '#'
+        energyGrid.add(`${nextX},${nextY}`)
 
         switch (tile) {
             case '.':
@@ -94,9 +94,45 @@ const main = async () => {
         }
     }
 
-    beam(-1, 0, 'right')
+    let maxEnergy = 0
 
-    console.log(energyGrid.reduce((acc, row) => acc + row.filter(item => item === '#').length, 0))
+    for (let i = 0; i < grid[0].length; i++) {
+        energyGrid = new Set()
+        beamSplits = {}
+
+        beam(i, -1, 'down')
+
+        maxEnergy = Math.max(maxEnergy, energyGrid.size)
+    }
+
+    for (let i = 0; i < grid[0].length; i++) {
+        energyGrid = new Set()
+        beamSplits = {}
+
+        beam(-1, i, 'right')
+
+        maxEnergy = Math.max(maxEnergy, energyGrid.size)
+    }
+
+    for (let i = 0; i < grid[0].length; i++) {
+        energyGrid = new Set()
+        beamSplits = {}
+
+        beam(grid[0].length + 1, i, 'left')
+
+        maxEnergy = Math.max(maxEnergy, energyGrid.size)
+    }
+
+    for (let i = 0; i < grid[0].length; i++) {
+        energyGrid = new Set()
+        beamSplits = {}
+
+        beam(i, grid[0].length + 1, 'up')
+
+        maxEnergy = Math.max(maxEnergy, energyGrid.size)
+    }
+
+    console.log(maxEnergy)
 }
 
 main()
