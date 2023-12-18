@@ -3,11 +3,18 @@ import { fetchInput, splitByLines } from './utils/index.js'
 const main = async () => {
     const data = await fetchInput({ day: 18, year: 2023 })
 
+    const hexToDirection = {
+        0: 'R',
+        1: 'D',
+        2: 'L',
+        3: 'U'
+    }
+
     const plan = splitByLines({ input: data }).map(row => {
         const parts = row.split(' ')
-        const direction = parts[0]
-        const meters = +parts[1]
-        const color = parts[2].replace(/\(|\)/g, '')
+        const color = parts[2].replace(/\(|\)|#/g, '')
+        const direction = hexToDirection[parseInt(color.slice(5), 16)]
+        const meters = parseInt(color.slice(0, 5), 16)
 
         return {
             direction,
@@ -16,10 +23,10 @@ const main = async () => {
         }
     })
 
-    const hole = {}
+    const hole = []
     let x = 0
     let y = 0
-    hole[`${x},${y}`] = true
+    hole.push({ x, y })
     const directionToCoord = {
         R: [1, 0],
         L: [-1, 0],
@@ -27,69 +34,43 @@ const main = async () => {
         D: [0, 1]
     }
 
+    let minX = Infinity
+    let maxX = 0
+    let minY = Infinity
+    let maxY = 0
+
+    let perimeter = 0
+
     for (let i = 0; i < plan.length; i++) {
         const { direction, meters } = plan[i]
 
         const [dx, dy] = directionToCoord[direction]
 
-        for (let j = 0; j < meters; j++) {
-            hole[`${x},${y}`] = true
+        x += dx * meters
+        y += dy * meters
 
-            x += dx
-            y += dy
+        hole.push({ x, y })
+        perimeter += meters
+
+        minX = Math.min(minX, x)
+        maxX = Math.max(maxX, x)
+        minY = Math.min(minY, y)
+        maxY = Math.max(maxY, y)
+    }
+
+    const shoelaceAlgorithm = points => {
+        let area = 0
+        for (let i = 0; i < points.length; i++) {
+            let j = (i + 1) % points.length
+            area += points[i].x * points[j].y
+            area -= points[j].x * points[i].y
         }
-
-        hole[`${x},${y}`] = true
+        return Math.abs(area / 2)
     }
 
-    const floodFill = (matrix, x, y, newColor) => {
-        const oldColor = matrix[`${x},${y}`]
-        fill(matrix, x, y, oldColor, newColor)
-        return matrix
-    }
-
-    const minX = Math.min(...Object.keys(hole).map(key => +key.split(',')[0]))
-    const maxX = Math.max(...Object.keys(hole).map(key => +key.split(',')[0]))
-    const minY = Math.min(...Object.keys(hole).map(key => +key.split(',')[1]))
-    const maxY = Math.max(...Object.keys(hole).map(key => +key.split(',')[1]))
-
-    const fill = (matrix, x, y, oldColor, newColor) => {
-        if (x < minX || x > maxX || y < minY || y > maxY || matrix[`${x},${y}`] !== oldColor) {
-            return
-        }
-
-        matrix[`${x},${y}`] = newColor
-
-        fill(matrix, x + 1, y, oldColor, newColor)
-        fill(matrix, x - 1, y, oldColor, newColor)
-        fill(matrix, x, y + 1, oldColor, newColor)
-        fill(matrix, x, y - 1, oldColor, newColor)
-    }
-
-    floodFill(hole, 1, 1, true)
-
-    // eslint-disable-next-line no-unused-vars
-    const print = () => {
-        for (let y = minY; y <= maxY; y++) {
-            let row = ''
-
-            for (let x = minX; x <= maxX; x++) {
-                if (x === 1 && y === 1) {
-                    row += 'S'
-                    continue
-                }
-
-                row += hole[`${x},${y}`] ? '#' : '.'
-            }
-
-            console.log(row)
-        }
-    }
-
-    // print()
-
-    console.log(Object.keys(hole).length)
+    // pick's theorem
+    // https://en.wikipedia.org/wiki/Pick%27s_theorem
+    console.log(shoelaceAlgorithm(hole) + perimeter / 2 + 1)
 }
 
-// --stack-size=5000 needed due to the recursive nature of the floodFill function
 main()
