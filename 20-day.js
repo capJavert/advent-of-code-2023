@@ -37,7 +37,6 @@ const main = async () => {
         }
     }
 
-    const buttonPresses = 1000
     const signals = {
         [true]: 0,
         [false]: 0
@@ -45,7 +44,12 @@ const main = async () => {
 
     const queue = []
 
-    for (let i = 0; i < buttonPresses; i += 1) {
+    let i = 0
+
+    const conSignals = {}
+    const conInputs = ['ln', 'dr', 'zx', 'vn']
+
+    while (Object.values(conSignals).length < conInputs.length) {
         queue.push({ from: 'button', signal: false, name: 'broadcaster' })
 
         while (queue.length) {
@@ -53,6 +57,10 @@ const main = async () => {
             const mod = mods[modName]
 
             signals[signal] += 1
+
+            if (signal && conInputs.includes(from) && modName === 'kj') {
+                conSignals[from] = i + 1 // + 1 because each needs to send a signal to kj
+            }
 
             if (!mod) {
                 continue
@@ -89,9 +97,24 @@ const main = async () => {
                     throw new Error(`Unknown mod type '${mod.type}'`)
             }
         }
+
+        i += 1
     }
 
-    console.log(signals[true] * signals[false])
+    const gcd = (a, b) => {
+        if (b === 0) {
+            return a
+        }
+        return gcd(b, a % b)
+    }
+
+    const lcm = (a, b) => (a * b) / gcd(a, b)
+
+    const lcmOfArray = numbers => numbers.reduce((a, b) => lcm(a, b))
+
+    // tnx aoc reddit for the hint
+    // https://old.reddit.com/r/adventofcode/comments/18mmfxb/2023_day_20_solutions/kean2eg/
+    console.log(lcmOfArray(Object.values(conSignals)))
 }
 
 main()
