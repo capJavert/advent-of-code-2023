@@ -8,3 +8,4 @@
 ### Update #6: 16th day of AOC already! Going well so far, today's problem was closest to the ray-tracing I'll ever get 😂 it involved shooting some recursive beams around the grid with a bunch of mirrors. The hardest thing was preventing beams from reflecting infinitely. 
 ### Update #7: Xmas is closing up and so is AoC. Currently sitting at 38/42 stars. 17th day I was not able to solve and today and the 19th day I only did part 1. They mostly involved some figuring out and analyzing the inputs. This year there were hardly any puzzles that could be solved by brute-forcing, part 2 was always more complex and required correct logical thinking and understanding of the core problem. 💪 Still going strong though and let's see how many more I can solve this year. 
 ### Update #8: At least I managed to solve all the Xmas gifts 😂
+### Update #9: Merry Xmas, 38 stars this year, not great not terrible, see ya next year! 🍻 (I might tackle few more challenges later)
